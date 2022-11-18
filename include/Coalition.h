@@ -9,20 +9,21 @@ class Agent;
 class Party;
 
 class Coalition
-
 {
 
 public:
     Coalition(int id);
     bool isFull();
     int getMandates() const;
-    void addParty();
     vector<int> getCoalition() const;
-    vector<int> setCoalition(int partyID);
+    void setCoalition(int partyID);
     int getcoID();
+    void setMandates (int mandates);
+    Agent& getAgent();
 
 private:
     int numOfMandates;
     vector<int> coVector;
     int coID;
+    Agent& ogAgent;
 };

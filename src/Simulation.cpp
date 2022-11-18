@@ -8,6 +8,7 @@ Simulation::Simulation(Graph graph, vector<Agent> agents) : mGraph(graph), mAgen
         agent.setCoalition(curr);
         mCoalitions.push_back(curr);
         numOfCoalitions++;
+        numOfAgents++;
     }
 }
 
@@ -67,6 +68,11 @@ const vector<vector<int>> Simulation::getPartiesByCoalitions() const
         output.push_back(co.getCoalition());        
     }
     return output;
+}
+
+vector<Agent> &Simulation:: getAgents()
+{
+    return mAgents;
 }
 
 

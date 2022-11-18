@@ -1,7 +1,18 @@
 #pragma once
+#include "Graph.h"
+#include "Party.h"
+#include <vector>
 
-class SelectionPolicy { };
+using std::vector;
 
-class MandatesSelectionPolicy: public SelectionPolicy{ };
+class SelectionPolicy 
+{ 
+    virtual Party& select()=0;
+};
+
+class MandatesSelectionPolicy: public SelectionPolicy
+{
+
+};
 
 class EdgeWeightSelectionPolicy: public SelectionPolicy{ };

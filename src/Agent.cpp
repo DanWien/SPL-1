@@ -17,5 +17,21 @@ int Agent::getPartyId() const
 
 void Agent::step(Simulation &sim)
 {
-    // TODO: implement this method
+    SelectionPolicy* p = getSelectionPolicy();
+    Party selected = p->select();
+    selected.setOffers(this->getCoalition());
+}
+
+SelectionPolicy* Agent::getSelectionPolicy()
+{
+    return mSelectionPolicy;
+}
+
+void Agent::setCoalition(Coalition& co)
+{
+    mCoalition = &co;
+}
+Coalition& Agent::getCoalition() const
+{
+    return *mCoalition;
 }

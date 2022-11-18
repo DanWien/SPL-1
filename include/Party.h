@@ -1,8 +1,11 @@
 #pragma once
 #include <string>
+#include <vector>
 
+using std::vector;
 using std::string;
 
+class Coalition;
 class JoinPolicy;
 class Simulation;
 
@@ -23,6 +26,12 @@ public:
     int getMandates() const;
     void step(Simulation &s);
     const string &getName() const;
+    int getTimer();
+    void setTimer();
+    JoinPolicy* getPoilcy();
+    vector<Coalition> getOffers();
+    void setOffers(Coalition& co);
+    int getId();
 
 private:
     int mId;
@@ -30,4 +39,6 @@ private:
     int mMandates;
     JoinPolicy *mJoinPolicy;
     State mState;
+    int cdTimer;
+    vector<Coalition> offers;
 };
