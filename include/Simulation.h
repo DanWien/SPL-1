@@ -8,6 +8,7 @@
 using std::string;
 using std::vector;
 
+class Agent;
 class Simulation
 {
 public:

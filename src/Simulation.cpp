@@ -4,8 +4,10 @@ Simulation::Simulation(Graph graph, vector<Agent> agents) : mGraph(graph), mAgen
 {
     for(Agent& agent: mAgents) 
     {
-        Coalition curr(agent.getId());
-        agent.setCoalition(curr);
+        vector<int> co={agent.getPartyId()};
+        int id=agent.getPartyId();
+        Coalition curr(agent, co, mGraph.getParty(id).getMandates(), agent.getId() );       
+        agent.setCoalition(agent.getCoalition());
         mCoalitions.push_back(curr);
         numOfCoalitions++;
         numOfAgents++;
@@ -70,13 +72,22 @@ const vector<vector<int>> Simulation::getPartiesByCoalitions() const
     return output;
 }
 
+int Simulation::getNumOfCoalitions() 
+{
+    return numOfCoalitions;
+}
+
 vector<Agent> &Simulation:: getAgents()
 {
     return mAgents;
 }
 
-
-int Simulation::getNumOfCoalitions() 
+int Simulation::getNumOfAgents()
 {
-    return numOfCoalitions;
+    return numOfAgents;
+}
+
+void Simulation::addAgent()
+{
+    numOfAgents++;
 }

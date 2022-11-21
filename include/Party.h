@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "Party.h"
 
 using std::vector;
 using std::string;
@@ -20,6 +21,11 @@ class Party
 {
 public:
     Party(int id, string name, int mandates, JoinPolicy *); 
+    virtual ~Party();
+    Party(const Party& other);
+    Party(Party&& other);
+    Party& operator=(const Party& other);
+    Party& operator=(Party&& other);
 
     State getState() const;
     void setState(State state);
@@ -30,7 +36,7 @@ public:
     void setTimer();
     JoinPolicy* getPoilcy();
     vector<Coalition> getOffers();
-    void setOffers(Coalition& co);
+    void addOffer(Coalition& co);
     int getId();
 
 private:

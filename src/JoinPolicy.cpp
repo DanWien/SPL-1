@@ -11,7 +11,7 @@ void MandatesJoinPolicy::join(Party& p, Simulation& s)
             maxMandates = &co;
     }
     maxMandates->setMandates(maxMandates->getMandates()+p.getMandates());
-    maxMandates->setCoalition(p.getId());
+    maxMandates->addParty(p.getId());
     Agent clone=Agent(maxMandates->getAgent());
     clone.setPartyId(p.getId());
     int x=s.getNumOfAgents();
@@ -21,19 +21,27 @@ void MandatesJoinPolicy::join(Party& p, Simulation& s)
 
 }
 
+int MandatesJoinPolicy::checkJPolicy()
+{
+    return 2;
+}
+
 void LastOfferJoinPolicy::join(Party& p, Simulation& s) 
 {
     p.setState(State::Joined);
     vector<Coalition> offers = p.getOffers();
     Coalition* toJoin=&offers.back();
     toJoin->setMandates(toJoin->getMandates()+p.getMandates());
-    toJoin->setCoalition(p.getId());
+    toJoin->addParty(p.getId());
     Agent clone=Agent(toJoin->getAgent());
     clone.setPartyId(p.getId());
     int x=s.getNumOfAgents();
     clone.setId(x-1);
     s.addAgent();
     s.getAgents().push_back(clone);
+}
 
-
-};
+int LastOfferJoinPolicy::checkJPolicy()
+{
+    return 3;
+}

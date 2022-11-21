@@ -12,18 +12,18 @@ class Coalition
 {
 
 public:
-    Coalition(int id);
+    Coalition(Agent& a, vector<int> co, int mandates, int id);
     bool isFull();
     int getMandates() const;
     vector<int> getCoalition() const;
-    void setCoalition(int partyID);
-    int getcoID();
+    void addParty(int partyID);
     void setMandates (int mandates);
     Agent& getAgent();
+    int getId();
 
 private:
-    int numOfMandates;
-    vector<int> coVector;
-    int coID;
     Agent& ogAgent;
+    vector<int> coVector;
+    int numOfMandates;
+    int coId;
 };

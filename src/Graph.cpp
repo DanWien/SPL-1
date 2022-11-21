@@ -28,3 +28,13 @@ Party &Graph::getParty(int partyId)
 {
     return mVertices[partyId];
 }
+vector<int> Graph::getNeighbours(int partyId)
+{
+    vector<int> neighbours;
+    for(int i = 0 ; i<getNumVertices() ; i++)
+    {
+        if(getEdgeWeight(partyId , i) > 0)
+            neighbours.push_back(i);
+    }
+    return neighbours;
+}
