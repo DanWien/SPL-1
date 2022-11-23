@@ -1,6 +1,9 @@
 #include "Agent.h"
+#include "SelectionPolicy.h"
+#include "Coalition.h"
+#include "Simulation.h"
 
-Agent::Agent(int agentId, int partyId, SelectionPolicy *selectionPolicy) : mAgentId(agentId), mPartyId(partyId), mSelectionPolicy(selectionPolicy), mCoalition (nullptr)
+Agent::Agent(int agentId, int partyId, SelectionPolicy *selectionPolicy) : mAgentId(agentId), mPartyId(partyId), mSelectionPolicy(selectionPolicy), mCoalition(agentId)
 {
 }
 
@@ -19,7 +22,11 @@ void Agent::step(Simulation &sim)
     SelectionPolicy* p = getSelectionPolicy();
     Party* selected = p->select(sim,this->getPartyId(), *this);
     if(selected!=nullptr)
-        selected->addOffer(this->getCoalition());
+    {
+        selected->addOffer(this->getCoId());
+        if(selected->getState() == Waiting)
+            selected->setState(CollectingOffers);
+    }
 }
 
 SelectionPolicy* Agent::getSelectionPolicy()
@@ -27,14 +34,9 @@ SelectionPolicy* Agent::getSelectionPolicy()
     return mSelectionPolicy;
 }
 
-void Agent::setCoalition(Coalition& co)
+void Agent::setCoalition(int co)
 {
-    mCoalition = &co;
-}
-
-Coalition& Agent::getCoalition() const
-{
-    return *mCoalition;
+    mCoalition = co;
 }
 
 void Agent:: setId(int id)
@@ -47,18 +49,18 @@ void Agent::setPartyId(int pId)
     mPartyId=pId;
 }
 
-Agent:: ~Agent()
+int Agent:: getCoId()
 {
-    if(mSelectionPolicy) 
-        delete mSelectionPolicy;
+    return mCoalition;
 }
 
-Agent::Agent(const Agent& other): mAgentId(other.mAgentId),mPartyId(other.mPartyId),mSelectionPolicy(nullptr), mCoalition(other.mCoalition)
+Agent:: ~Agent()
 {
-    int checkPolicy=other.mSelectionPolicy->checkSPolicy();
-    if(checkPolicy==2)
-        mSelectionPolicy=new MandatesSelectionPolicy;
-    else mSelectionPolicy=new EdgeWeightSelectionPolicy;
+    delete mSelectionPolicy; mSelectionPolicy=nullptr;
+}
+
+Agent::Agent(const Agent& other): mAgentId(other.mAgentId),mPartyId(other.mPartyId),mSelectionPolicy(other.mSelectionPolicy->cloneSPolicy()), mCoalition(other.mCoalition)
+{
 }
 
 Agent::Agent(Agent&& other):mAgentId(other.mAgentId),mPartyId(other.mPartyId), mSelectionPolicy(other.mSelectionPolicy), mCoalition(other.mCoalition)
@@ -68,10 +70,13 @@ Agent::Agent(Agent&& other):mAgentId(other.mAgentId),mPartyId(other.mPartyId), m
 
 Agent& Agent::operator=(const Agent& other) 
 {
-    mAgentId=other.mAgentId;
-    mPartyId=other.mPartyId;
-    mCoalition=other.mCoalition;
-    *mSelectionPolicy=(*(other.mSelectionPolicy));
+    if(this!=&other)
+    {
+        mAgentId=other.mAgentId;
+        mPartyId=other.mPartyId;
+        mCoalition=other.mCoalition;
+        *mSelectionPolicy=(*(other.mSelectionPolicy));
+    }
     return *this;
 }
 
@@ -80,11 +85,11 @@ Agent& Agent::operator=(Agent&& other)
     mAgentId=other.mAgentId;
     mPartyId=other.mPartyId;
     mCoalition=other.mCoalition;
-    if(mSelectionPolicy)
-        delete mSelectionPolicy;
+    delete mSelectionPolicy;
     mSelectionPolicy=other.mSelectionPolicy;
     other.mSelectionPolicy=nullptr;
     return *this;
 }
+
     
 

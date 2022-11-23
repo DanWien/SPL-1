@@ -1,12 +1,10 @@
 #pragma once
-
 #include <vector>
 #include "Graph.h"
-#include "SelectionPolicy.h"
+
 
 class SelectionPolicy;
 class Coalition;
-
 class Agent
 {
 public:
@@ -15,11 +13,11 @@ public:
     int getPartyId() const;
     int getId() const;
     void step(Simulation &);
-    Coalition &getCoalition() const;
-    void setCoalition(Coalition& co);
+    void setCoalition(int co);
     SelectionPolicy* getSelectionPolicy();
     void setId(int id);
     void setPartyId(int pId);
+    int getCoId();
 
  
 
@@ -34,5 +32,5 @@ private:
     int mAgentId;
     int mPartyId;
     SelectionPolicy *mSelectionPolicy;
-    Coalition* mCoalition;
+    int mCoalition;
 };

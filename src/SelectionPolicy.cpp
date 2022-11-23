@@ -1,4 +1,5 @@
 #include "SelectionPolicy.h"
+#include "Simulation.h"
 
 Party* MandatesSelectionPolicy::select(Simulation &sim, int partyId, Agent& agent)
 {
@@ -11,11 +12,11 @@ Party* MandatesSelectionPolicy::select(Simulation &sim, int partyId, Agent& agen
         Party& curr = g.getParty(i);
         if(curr.getState() != State::Joined)
         {
-            vector<Coalition> offers = curr.getOffers();
-            for (Coalition& co : offers)
+            vector<int> offers = curr.getOffers();
+            for (int id : offers)
             {
-                int coId=agent.getCoalition().getId();
-                if( coId == co.getId())
+                int coId=agent.getCoId();
+                if( coId == id)
                     wasOffered = true;
             }
             if(!wasOffered)
@@ -35,14 +36,14 @@ Party* MandatesSelectionPolicy::select(Simulation &sim, int partyId, Agent& agen
     return maxMandates;
 }
 
-int MandatesSelectionPolicy::checkSPolicy()
+SelectionPolicy* MandatesSelectionPolicy:: cloneSPolicy() 
 {
-    return 2;
+    return new MandatesSelectionPolicy();
 }
 
 Party* EdgeWeightSelectionPolicy::select(Simulation &sim, int partyId, Agent& agent)
 {
-    Graph g = sim.getGraph();
+    Graph &g = sim.getGraph();
     vector<int> neighbours = g.getNeighbours(partyId);
     vector<int> relevantParties;
     for(int i : neighbours)
@@ -51,11 +52,11 @@ Party* EdgeWeightSelectionPolicy::select(Simulation &sim, int partyId, Agent& ag
         Party& curr = g.getParty(i);
         if(curr.getState() != State::Joined)
         {
-            vector<Coalition> offers = curr.getOffers();
-            for (Coalition& co : offers)
+            vector<int> offers = curr.getOffers();
+            for (int id : offers)
             {
-                int coId=agent.getCoalition().getId();
-                if( coId == co.getId())
+                int coId= agent.getCoId();
+                if(coId == id)
                     wasOffered = true;
             }
             if(!wasOffered)
@@ -75,7 +76,7 @@ Party* EdgeWeightSelectionPolicy::select(Simulation &sim, int partyId, Agent& ag
     return maxEdgeWeight;
 }
 
-int EdgeWeightSelectionPolicy::checkSPolicy()
+SelectionPolicy* EdgeWeightSelectionPolicy:: cloneSPolicy() 
 {
-    return 3;
+    return new EdgeWeightSelectionPolicy();
 }

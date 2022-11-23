@@ -1,6 +1,9 @@
+#include "Party.h"
 #include "JoinPolicy.h"
+#include "Coalition.h"
+#include "Simulation.h"
 
-Party::Party(int id, string name, int mandates, JoinPolicy *jp) : mId(id), mName(name), mMandates(mandates), mJoinPolicy(jp), mState(Waiting) , cdTimer(3),offers(vector<Coalition>())
+Party::Party(int id, string name, int mandates, JoinPolicy *jp) : mId(id), mName(name), mMandates(mandates), mJoinPolicy(jp), mState(Waiting) , cdTimer(3),offers{}
 {
 }
 
@@ -49,14 +52,14 @@ JoinPolicy* Party::getPoilcy()
     return mJoinPolicy;
 }
 
-vector<Coalition> Party::getOffers()
+vector<int> Party::getOffers()
 {
     return offers;
 }
 
-void Party::addOffer(Coalition& co)
+void Party::addOffer(int coId)
 {
-    offers.push_back(co);
+    offers.push_back(coId);
 }
 
 int Party::getId()
@@ -66,18 +69,11 @@ int Party::getId()
 
 Party::~Party()
 {
-    if(mJoinPolicy) 
-        delete mJoinPolicy;
+    delete mJoinPolicy; mJoinPolicy = nullptr;
 }
 
-Party::Party(const Party& other): mId(other.mId), mName(other.mName), mMandates(other.mMandates), mJoinPolicy(nullptr), mState(other.mState),cdTimer(other.cdTimer),offers(other.offers)
-{
-    
-    int policy= other.mJoinPolicy->checkJPolicy();
-    if(policy==2)
-        mJoinPolicy=new MandatesJoinPolicy;
-    else mJoinPolicy=new LastOfferJoinPolicy;
-       
+Party::Party(const Party& other): mId(other.mId), mName(other.mName), mMandates(other.mMandates), mJoinPolicy(other.mJoinPolicy->clonePolicy()), mState(other.mState),cdTimer(other.cdTimer),offers(other.offers)
+{   
 }
 
 Party::Party(Party&& other) : mId(other.mId), mName(other.mName), mMandates(other.mMandates), mJoinPolicy(other.mJoinPolicy), mState(other.mState), cdTimer(other.cdTimer),offers(other.offers)
@@ -87,13 +83,16 @@ Party::Party(Party&& other) : mId(other.mId), mName(other.mName), mMandates(othe
 
 Party& Party:: operator=(const Party& other)
 {
-    mId=other.mId;
-    mName=other.mMandates;
-    mMandates=other.mMandates;
-    mState=other.mState;
-    cdTimer=other.cdTimer;
-    offers=other.offers;
-    *mJoinPolicy=(*(other.mJoinPolicy));
+    if(this!=&other)
+    {
+        mId=other.mId;
+        mName=other.mMandates;
+        mMandates=other.mMandates;
+        mState=other.mState;
+        cdTimer=other.cdTimer;
+        offers=other.offers;
+        *mJoinPolicy=(*(other.mJoinPolicy));
+    }
     return *this;
 }
 

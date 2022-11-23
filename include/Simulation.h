@@ -8,6 +8,7 @@
 using std::string;
 using std::vector;
 
+class Coalition;
 class Agent;
 class Simulation
 {
@@ -18,13 +19,17 @@ public:
     bool shouldTerminate() const;
 
     const Graph &getGraph() const;
+    Graph &getGraph();
     const vector<Agent> &getAgents() const;
     const Party &getParty(int partyId) const;
+    Party &getParty(int partyId);
     const vector<vector<int>> getPartiesByCoalitions() const;
     int getNumOfCoalitions();
     vector<Agent> &getAgents();
     int getNumOfAgents();
     void addAgent();
+    Coalition& getCoalition(int id);
+    Agent& getAgent(int id);
 
 private:
     Graph mGraph;

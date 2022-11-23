@@ -21,6 +21,7 @@
         "tuple": "cpp",
         "valarray": "cpp",
         "memory": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "new": "cpp"
     }
 }

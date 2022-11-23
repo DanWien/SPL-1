@@ -1,47 +1,50 @@
 #include "JoinPolicy.h"
+#include "Coalition.h"
+#include "Simulation.h"
 
 void MandatesJoinPolicy::join(Party& p, Simulation& s) 
 {
     p.setState(State::Joined);
-    vector<Coalition> offers = p.getOffers();
-    Coalition* maxMandates = &offers.front();
-    for(Coalition& co: offers)
+    vector<int> offers = p.getOffers();
+    Coalition& maxMandates = s.getCoalition(offers.front());
+    for(int coId: offers)
     {
-        if(co.getMandates() > maxMandates->getMandates())
-            maxMandates = &co;
+        Coalition& currCo = s.getCoalition(coId);
+        if(currCo.getMandates() > maxMandates.getMandates())
+            maxMandates = currCo;
     }
-    maxMandates->setMandates(maxMandates->getMandates()+p.getMandates());
-    maxMandates->addParty(p.getId());
-    Agent clone=Agent(maxMandates->getAgent());
+    maxMandates.setMandates(maxMandates.getMandates()+p.getMandates());
+    maxMandates.addParty(p.getId());
+    Agent clone=Agent(s.getAgent(maxMandates.getId()));
     clone.setPartyId(p.getId());
     int x=s.getNumOfAgents();
-    clone.setId(x-1);
+    clone.setId(x);
     s.addAgent();
     s.getAgents().push_back(clone);
 
 }
 
-int MandatesJoinPolicy::checkJPolicy()
+JoinPolicy* MandatesJoinPolicy:: clonePolicy() 
 {
-    return 2;
+    return new MandatesJoinPolicy;
 }
 
 void LastOfferJoinPolicy::join(Party& p, Simulation& s) 
 {
     p.setState(State::Joined);
-    vector<Coalition> offers = p.getOffers();
-    Coalition* toJoin=&offers.back();
-    toJoin->setMandates(toJoin->getMandates()+p.getMandates());
-    toJoin->addParty(p.getId());
-    Agent clone=Agent(toJoin->getAgent());
+    vector <int> offers = p.getOffers();
+    Coalition& toJoin = s.getCoalition(offers.back());
+    toJoin.setMandates(toJoin.getMandates()+p.getMandates());
+    toJoin.addParty(p.getId());
+    Agent clone=Agent(s.getAgent(toJoin.getId()));
     clone.setPartyId(p.getId());
     int x=s.getNumOfAgents();
-    clone.setId(x-1);
+    clone.setId(x);
     s.addAgent();
     s.getAgents().push_back(clone);
 }
 
-int LastOfferJoinPolicy::checkJPolicy()
+JoinPolicy* LastOfferJoinPolicy:: clonePolicy() 
 {
-    return 3;
+    return new LastOfferJoinPolicy;
 }

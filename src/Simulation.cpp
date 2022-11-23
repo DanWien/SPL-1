@@ -1,13 +1,14 @@
 #include "Simulation.h"
 
-Simulation::Simulation(Graph graph, vector<Agent> agents) : mGraph(graph), mAgents(agents) 
+Simulation::Simulation(Graph graph, vector<Agent> agents) : mGraph(graph), mAgents(agents), numOfCoalitions(0), mCoalitions{}, numOfAgents(0)
 {
     for(Agent& agent: mAgents) 
     {
-        vector<int> co={agent.getPartyId()};
+        std::vector<int> co;
         int id=agent.getPartyId();
-        Coalition curr(agent, co, mGraph.getParty(id).getMandates(), agent.getId() );       
-        agent.setCoalition(agent.getCoalition());
+        co.push_back(id);
+        Coalition curr(co, mGraph.getParty(id).getMandates(), agent.getId() );    
+        agent.setCoalition(agent.getId());
         mCoalitions.push_back(curr);
         numOfCoalitions++;
         numOfAgents++;
@@ -20,7 +21,7 @@ void Simulation::step()
     {
         for(int i=0; i<mGraph.getNumVertices(); i++)
         {
-            Party curr = getParty(i);
+            Party& curr = mGraph.getParty(i);
             if(curr.getState()!=Joined)
                 curr.step(*this);
         }
@@ -50,12 +51,22 @@ const Graph &Simulation::getGraph() const
     return mGraph;
 }
 
+Graph& Simulation::getGraph()
+{
+    return mGraph;
+}
+
 const vector<Agent> &Simulation::getAgents() const
 {
     return mAgents;
 }
 
 const Party &Simulation::getParty(int partyId) const
+{
+    return mGraph.getParty(partyId);
+}
+
+ Party &Simulation::getParty(int partyId) 
 {
     return mGraph.getParty(partyId);
 }
@@ -90,4 +101,13 @@ int Simulation::getNumOfAgents()
 void Simulation::addAgent()
 {
     numOfAgents++;
+}
+
+Coalition& Simulation:: getCoalition(int id) 
+{
+    return this->mCoalitions[id];
+}
+Agent& Simulation::getAgent(int id)
+{
+    return mAgents[id];
 }
