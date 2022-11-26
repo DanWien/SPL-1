@@ -20,12 +20,13 @@ int Agent::getPartyId() const
 void Agent::step(Simulation &sim)
 {
     SelectionPolicy* p = getSelectionPolicy();
-    Party* selected = p->select(sim,this->getPartyId(), *this);
-    if(selected!=nullptr)
+    int selectedPartyId = p->select(sim,this->getPartyId(), *this);
+    if(selectedPartyId!=-1)
     {
-        selected->addOffer(this->getCoId());
-        if(selected->getState() == Waiting)
-            selected->setState(CollectingOffers);
+        Party& selected = sim.getParty(selectedPartyId);
+        selected.addOffer(this->getCoId());
+        if(selected.getState() == Waiting)
+            selected.setState(CollectingOffers);
     }
 }
 

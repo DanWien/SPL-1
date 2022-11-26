@@ -11,7 +11,7 @@ class Agent;
 class SelectionPolicy 
 {
 public:
-    virtual Party* select(Simulation &sim, int partyId, Agent& agent)=0;
+    virtual int select(Simulation &sim, int partyId, Agent& agent)=0;
     virtual ~SelectionPolicy()=default;
     virtual SelectionPolicy* cloneSPolicy()=0;
 };
@@ -19,13 +19,13 @@ public:
 class MandatesSelectionPolicy: public SelectionPolicy
 {
 public:
-    virtual Party* select(Simulation &sim, int partyId, Agent& agent);
+    virtual int select(Simulation &sim, int partyId, Agent& agent);
     SelectionPolicy* cloneSPolicy() override;
 };
 
 class EdgeWeightSelectionPolicy: public SelectionPolicy
 {
 public:
-    virtual Party* select(Simulation &sim, int partyId, Agent& agent);
+    virtual int select(Simulation &sim, int partyId, Agent& agent);
     SelectionPolicy* cloneSPolicy() override;
 };

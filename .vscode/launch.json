@@ -13,7 +13,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/cRace",
-            "args": ["${workspaceFolder}/tests/03.json"],
+            "args": ["${workspaceFolder}/tests/output1.json"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

@@ -6,13 +6,18 @@ void MandatesJoinPolicy::join(Party& p, Simulation& s)
 {
     p.setState(State::Joined);
     vector<int> offers = p.getOffers();
-    Coalition& maxMandates = s.getCoalition(offers.front());
+    int max = 0;
+    int coFinalId = -1;
     for(int coId: offers)
     {
         Coalition& currCo = s.getCoalition(coId);
-        if(currCo.getMandates() > maxMandates.getMandates())
-            maxMandates = currCo;
+        if(currCo.getMandates() > max)
+        {
+            max = currCo.getMandates();
+            coFinalId = currCo.getId();
+        }
     }
+    Coalition& maxMandates = s.getCoalition(coFinalId);
     maxMandates.setMandates(maxMandates.getMandates()+p.getMandates());
     maxMandates.addParty(p.getId());
     Agent clone=Agent(s.getAgent(maxMandates.getId()));

@@ -1,9 +1,9 @@
 #include "SelectionPolicy.h"
 #include "Simulation.h"
 
-Party* MandatesSelectionPolicy::select(Simulation &sim, int partyId, Agent& agent)
+int MandatesSelectionPolicy::select(Simulation &sim, int partyId, Agent& agent)
 {
-    Graph g = sim.getGraph();
+    Graph& g = sim.getGraph();
     vector<int> neighbours = g.getNeighbours(partyId);
     vector<int> relevantParties;
     for(int i : neighbours)
@@ -23,14 +23,14 @@ Party* MandatesSelectionPolicy::select(Simulation &sim, int partyId, Agent& agen
                 relevantParties.push_back(curr.getId());
         }
     }
-    Party* maxMandates=nullptr;
+    int maxMandates = -1;
     int max=0;
     for(int p : relevantParties)
     {
         if(g.getMandates(p) > max)
         {
-            max=g.getMandates(p);
-            maxMandates=&g.getParty(p);
+            max = g.getMandates(p);
+            maxMandates = p;
         }
     }
     return maxMandates;
@@ -41,7 +41,7 @@ SelectionPolicy* MandatesSelectionPolicy:: cloneSPolicy()
     return new MandatesSelectionPolicy();
 }
 
-Party* EdgeWeightSelectionPolicy::select(Simulation &sim, int partyId, Agent& agent)
+int EdgeWeightSelectionPolicy::select(Simulation &sim, int partyId, Agent& agent)
 {
     Graph &g = sim.getGraph();
     vector<int> neighbours = g.getNeighbours(partyId);
@@ -63,14 +63,14 @@ Party* EdgeWeightSelectionPolicy::select(Simulation &sim, int partyId, Agent& ag
                 relevantParties.push_back(curr.getId());
         }
     }
-    Party* maxEdgeWeight=nullptr;
+    int maxEdgeWeight = -1;
     int max=0;
     for(int p : relevantParties)
     {
         if(g.getEdgeWeight(p,partyId) > max)
         {
             max=g.getEdgeWeight(p,partyId);
-            maxEdgeWeight=&g.getParty(p);
+            maxEdgeWeight = p;
         }
     }
     return maxEdgeWeight;
